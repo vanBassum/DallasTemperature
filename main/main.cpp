@@ -1,10 +1,13 @@
 #include <freertos/FreeRTOS.h>
 #include <freertos/task.h>
 #include <esp_log.h>
+#include <esp_mac.h>
+#include <string>
 #include "onewiremanager.h"
 #include "influx.h"
 #include "startup.h"
 #include "config.h"
+
 
 #define TAG					  "MAIN"
 
@@ -21,8 +24,16 @@
 
 
 
+std::string readMacAddress() {
+    uint8_t macRaw[6];
+    esp_read_mac(macRaw, ESP_MAC_WIFI_STA);
 
+    char macStr[18];
+    snprintf(macStr, sizeof(macStr), "%02X:%02X:%02X:%02X:%02X:%02X",
+             macRaw[0], macRaw[1], macRaw[2], macRaw[3], macRaw[4], macRaw[5]);
 
+    return std::string(macStr);
+}
 
 
 
@@ -37,6 +48,10 @@ void Test(void *pvParameters)
     OneWireManager oneWireManager(GPIO_DS18B20_DATA, RMT_CHANNEL_1, RMT_CHANNEL_0);
     std::vector<std::shared_ptr<DS18B20Wrapper>> devices;
 
+
+    std::string mac = readMacAddress();
+    ESP_LOGI(TAG, "Device MAC: %s", mac.c_str());
+
     // Periodically update and read sensors
     while (true)
     {
@@ -49,7 +64,8 @@ void Test(void *pvParameters)
             float temperature = sensor->readTemperature();
             ESP_LOGI(TAG, "Temperature: %.2f", temperature);
             Influx::Point("Dallas")
-                .AddTag("ID", sensor->ToString())		
+                .AddTag("ESP-MAC", mac)	
+                .AddTag("Dallas-ROMCode", sensor->ToString())		
                 .AddField("Temperature", temperature)
                 .SetTimestampNow()
                 .Post(client);

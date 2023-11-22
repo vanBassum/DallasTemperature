@@ -543,7 +543,7 @@ DS18B20_ERROR ds18b20_read_temp(const DS18B20_Info * ds18b20_info, float * value
         }
 
         float temp = _decode_temp(temp_LSB, temp_MSB, ds18b20_info->resolution);
-        ESP_LOGI(TAG, "temp_LSB 0x%02x, temp_MSB 0x%02x, temp %f", temp_LSB, temp_MSB, temp);
+        ESP_LOGD(TAG, "temp_LSB 0x%02x, temp_MSB 0x%02x, temp %f", temp_LSB, temp_MSB, temp);
 
         if (value)
         {
