@@ -4,6 +4,7 @@
 #include <memory>
 #include <driver/gpio.h>
 #include <string.h>
+#include <algorithm>
 
 class OneWireManager {
     static constexpr const char* TAG = "OneWireManager";
