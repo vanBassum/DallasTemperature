@@ -4,19 +4,20 @@
 #include "onewiremanager.h"
 #include "influx.h"
 #include "startup.h"
+#include "config.h"
 
-#define TAG					    "MAIN"
-#define INFLUXDB_URL            "https://influxdb.vanbassum.com"
-#define INFLUXDB_TOKEN          "KUepRR_4WEKIFjK9bTLBOxeVq4UfkHxY9AwcEu965P7rwmJTuk-Obr4KtYBrfTxJzbruCNlmlcPL6PQbw8ketw=="
-#define INFLUXDB_ORG            "e7535ad1eda7eac4"
-#define INFLUXDB_BUCKET         "Test"
-#define WIFI_SSID 			    "Koole Controls"
-#define WIFI_PASS 			    "K@u5tGD!8Ug&X!rc"
-#define GPIO_DS18B20_DATA       GPIO_NUM_12
-#define GPIO_DS18B20_VCC        GPIO_NUM_14
-#define MAX_DEVICES             8
-#define DS18B20_RESOLUTION      DS18B20_RESOLUTION_12_BIT
-#define SAMPLE_PERIOD           1000   // milliseconds
+#define TAG					  "MAIN"
+
+//#define INFLUXDB_URL            "MyData"
+//#define INFLUXDB_TOKEN          "MyData"
+//#define INFLUXDB_ORG            "MyData"
+//#define INFLUXDB_BUCKET         "MyData"
+//#define WIFI_SSID 			  "MyData"
+//#define WIFI_PASS 			  "MyData"
+//
+//#define GPIO_DS18B20_DATA       GPIO_NUM_12
+//#define GPIO_DS18B20_VCC        GPIO_NUM_14
+//#define SAMPLE_PERIOD           1000   // milliseconds
 
 
 
