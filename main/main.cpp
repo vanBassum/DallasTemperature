@@ -40,9 +40,11 @@ std::string readMacAddress() {
 void Test(void *pvParameters)
 {	
     // Use a gpio pin for VCC, not a great idea, but good enough for now.
+#ifdef GPIO_DS18B20_VCC
     gpio_reset_pin(GPIO_DS18B20_VCC);
     gpio_set_direction(GPIO_DS18B20_VCC, GPIO_MODE_OUTPUT);
     gpio_set_level(GPIO_DS18B20_VCC, 1);
+#endif
 
 	Influx::Client client(INFLUXDB_URL, INFLUXDB_TOKEN, INFLUXDB_ORG, INFLUXDB_BUCKET);
     OneWireManager oneWireManager(GPIO_DS18B20_DATA, RMT_CHANNEL_1, RMT_CHANNEL_0);
@@ -61,16 +63,18 @@ void Test(void *pvParameters)
         // Access sensors and perform other operations as needed
         for (auto sensor : devices)
         {
-            float temperature = sensor->readTemperature();
-            ESP_LOGI(TAG, "Temperature: %.2f", temperature);
-            Influx::Point("Dallas")
-                .AddTag("ESP-MAC", mac)	
-                .AddTag("Dallas-ROMCode", sensor->ToString())		
-                .AddField("Temperature", temperature)
-                .SetTimestampNow()
-                .Post(client);
+            float temperature = 0;
+            if(sensor->readTemperature(&temperature) == DS18B20_OK)
+            {
+                ESP_LOGI(TAG, "Temperature: %.2f", temperature);
+                Influx::Point("Dallas")
+                    .AddTag("ESP-MAC", mac)	
+                    .AddTag("Dallas-ROMCode", sensor->ToString())		
+                    .AddField("Temperature", temperature)
+                    .SetTimestampNow()
+                    .Post(client);
+            }
         }
-
         vTaskDelay(pdMS_TO_TICKS(SAMPLE_PERIOD));
     }
 

@@ -38,18 +38,17 @@ public:
         ds18b20_free(&ds18b20_info_);
     }
 
-    float readTemperature()
+    DS18B20_ERROR readTemperature(float* temperature)
     {
-        float temperature = 0.0;
         ds18b20_wait_for_conversion(ds18b20_info_);
-        DS18B20_ERROR error = ds18b20_read_temp(ds18b20_info_, &temperature);
+        DS18B20_ERROR error = ds18b20_read_temp(ds18b20_info_, temperature);
 
         if (error != DS18B20_OK)
         {
             ESP_LOGE(TAG, "Error reading temperature: %d", error);
         }
 
-        return temperature;
+        return error;
     }
 
     OneWireBus_ROMCode getROMCode() const
